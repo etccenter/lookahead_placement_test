@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETC - Look Ahead Placement Test</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        etcRed: '#dc2626',
+                        etcRedDark: '#b91c1c',
+                        etcBlack: '#111827',
+                        etcDarkGray: '#1f2937',
+                        etcLightBg: '#f9fafb'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Arabic', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans Arabic', sans-serif;
+            background-color: #ffffff;
+            color: #111827;
+        }
+        /* Custom Scrollbar for sleek look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dc2626;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b91c1c;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 min-h-screen flex flex-col justify-between selection:bg-red-500 selection:text-white">
+
+    <!-- TOP HEADER -->
+    <header class="sticky top-0 z-40 bg-black text-white shadow-md border-b-2 border-etcRed">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-etcRed text-white p-2 rounded-lg font-bold text-xl tracking-wider">ETC</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight md:text-xl">Educational Trust Center</h1>
+                    <p class="text-xs text-gray-400">Look Ahead Placement Test</p>
+                </div>
+            </div>
+
+            <!-- Timer & Admin Panel Access -->
+            <div class="flex items-center space-x-4">
+                <!-- Sticky Countdown Timer (Hidden until test starts) -->
+                <div id="timerContainer" class="hidden flex items-center bg-gray-900 border border-red-600/50 px-3 py-1.5 rounded-lg text-sm font-semibold text-red-500 animate-pulse">
+                    <i class="fa-regular fa-clock mr-2 text-etcRed"></i>
+                    <span id="timerDisplay">30:00</span>
+                </div>
+
+                <!-- Admin Login Button -->
+                <button onclick="openAdminPasswordModal()" class="text-gray-400 hover:text-white transition p-2 rounded-lg hover:bg-gray-800" title="Admin Login">
+                    <i class="fa-solid fa-lock text-base"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-4xl w-full mx-auto p-4 md:p-6 flex-grow">
+
+        <!-- STEP 1: INSTRUCTIONS & REGISTRATION CARD -->
+        <div id="registrationCard" class="bg-white border border-gray-200 rounded-xl shadow-lg p-6 md:p-8 my-4 transition-all">
+            
+            <div class="border-b border-gray-200 pb-4 mb-6">
+                <h2 class="text-2xl font-bold text-etcBlack tracking-tight">Look Ahead Placement Test</h2>
+                <p class="text-sm text-gray-500 mt-1">Please read the instructions carefully before filling out your details.</p>
+            </div>
+
+            <!-- BILINGUAL INSTRUCTIONS -->
+            <div class="grid md:grid-cols-2 gap-6 bg-gray-50 p-5 rounded-xl border border-gray-200 mb-8">
+                <!-- English Instructions -->
+                <div class="text-sm text-gray-800 space-y-3">
+                    <h3 class="font-bold text-etcRed text-base border-b border-red-200 pb-1 flex items-center">
+                        <i class="fa-solid fa-circle-info mr-2"></i> Instructions (English)
+                    </h3>
+                    <ul class="list-disc pl-5 space-y-2 text-xs md:text-sm">
+                        <li><strong>Interactive Format:</strong> Online progressive levels (Elementary A1 to Advanced C1).</li>
+                        <li><strong>Answering Questions:</strong> Select options (a, b, c, d) or type answers in given fields.</li>
+                        <li><strong>Progression Rules:</strong> Each section is out of 30 marks. Reaching the threshold advances you to the next section; otherwise, your placement is assigned immediately.</li>
+                        <li><strong>Important Notice:</strong> Do not refresh or close your browser window during the test. Duration is <strong>30 minutes</strong>.</li>
+                    </ul>
+                </div>
+
+                <!-- Arabic Instructions -->
+                <div class="text-sm text-gray-800 space-y-3 dir-rtl text-right" dir="rtl">
+                    <h3 class="font-bold text-etcRed text-base border-b border-red-200 pb-1 flex items-center justify-end">
+                        تعليمات الاختبار (العربية) <i class="fa-solid fa-circle-info ml-2"></i>
+                    </h3>
+                    <ul class="list-disc pr-5 space-y-2 text-xs md:text-sm">
+                        <li><strong>صيغة تفاعلية:</strong> ينفذ الاختبار تفاعلياً ومقسم لمستويات متدرجة (من المبتدئ A1 إلى المتقدم C1).</li>
+                        <li><strong>إجابة الأسئلة:</strong> حدد الخيار الصحيح أو اكتب إجابتك في المكان المخصص.</li>
+                        <li><strong>قواعد الانتقال:</strong> كل قسم من 30 درجة. بناءً على علامتك، يحدد النظام انتقالك للمستوى التالي أو إنهاء الاختبار.</li>
+                        <li><strong>تنبيه هام:</strong> لا تقم بتحديث الصفحة أو إغلاق المتصفح أثناء الاختبار. مدة الاختبار <strong>30 دقيقة</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- REGISTRATION FORM -->
+            <form id="studentForm" onsubmit="startTest(event)" class="space-y-5 max-w-lg mx-auto">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Full Name / الاسم الكامل <span class="text-etcRed">*</span></label>
+                    <input type="text" id="studentName" required placeholder="e.g. John Doe" 
+                           class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-etcRed focus:border-etcRed outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Phone Number / رقم الهاتف <span class="text-etcRed">*</span></label>
+                    <input type="tel" id="studentPhone" required placeholder="e.g. +963 9XX XXX XXX" 
+                           class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-etcRed focus:border-etcRed outline-none transition">
+                </div>
+
+                <button type="submit" class="w-full bg-etcRed hover:bg-etcRedDark text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition flex items-center justify-center text-base">
+                    Begin Placement Test <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- STEP 2: TEST CONTAINER (Hidden initially) -->
+        <div id="testContainer" class="hidden">
+            <!-- Level Indicator Badge -->
+            <div class="flex justify-between items-center mb-6 bg-gray-100 p-4 rounded-xl border border-gray-200">
+                <div>
+                    <span id="currentLevelBadge" class="bg-etcBlack text-white text-xs uppercase px-3 py-1 rounded-full font-bold tracking-wider">Beginner Level</span>
+                    <h2 id="currentLevelTitle" class="text-xl font-bold text-gray-900 mt-1">Beginner Section (30 Marks)</h2>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-gray-500 block">Progress</span>
+                    <span id="levelProgressText" class="font-bold text-etcRed text-sm">Level 1 of 5</span>
+                </div>
+            </div>
+
+            <!-- Dynamic Question Form -->
+            <form id="activeTestForm" class="space-y-8" onsubmit="submitCurrentSection(event)">
+                <div id="questionsWrapper" class="space-y-6">
+                    <!-- Dynamic questions injected here by JavaScript -->
+                </div>
+
+                <!-- Submit / Next Button -->
+                <div class="pt-6 border-t border-gray-200 flex justify-end">
+                    <button type="submit" class="bg-etcRed hover:bg-etcRedDark text-white font-bold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition flex items-center text-base">
+                        Submit & Continue <i class="fa-solid fa-chevron-right ml-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- STEP 3: RESULT SCREEN (Hidden initially) -->
+        <div id="resultScreen" class="hidden bg-white border border-gray-200 rounded-xl shadow-xl p-6 md:p-8 my-4">
+            <div class="text-center border-b border-gray-200 pb-6 mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 text-etcRed rounded-full mb-3">
+                    <i class="fa-solid fa-award text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Placement Test Complete</h2>
+                <p class="text-sm text-gray-500">Thank you for completing the ETC Look Ahead Placement Test.</p>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-8 max-w-xl mx-auto space-y-3">
+                <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                    <span class="text-gray-600 font-medium">Student Name:</span>
+                    <span id="resStudentName" class="font-bold text-gray-900">---</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                    <span class="text-gray-600 font-medium">Phone Number:</span>
+                    <span id="resStudentPhone" class="font-bold text-gray-900">---</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                    <span class="text-gray-600 font-medium">Assigned Placement Level:</span>
+                    <span id="resAssignedLevel" class="font-extrabold text-etcRed text-lg">---</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                    <span class="text-gray-600 font-medium">Total Score across Attempted Sections:</span>
+                    <span id="resTotalScore" class="font-bold text-gray-900">---</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 font-medium">Time Taken:</span>
+                    <span id="resTimeSpent" class="font-bold text-gray-900">---</span>
+                </div>
+            </div>
+
+            <!-- Full Report Section Breakdown -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <i class="fa-solid fa-file-lines mr-2 text-etcRed"></i> Detailed Performance Report
+                </h3>
+                <div id="fullReportContainer" class="space-y-6">
+                    <!-- Dynamic detailed breakdown per section -->
+                </div>
+            </div>
+
+            <div class="text-center pt-4">
+                <button onclick="location.reload()" class="bg-gray-900 hover:bg-black text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Take Test Again
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-gray-400 py-4 text-center text-xs border-t border-gray-800">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2">
+            <p>&copy; 2026 Educational Trust Center (ETC). All rights reserved.</p>
+            <p class="text-gray-500">Look Ahead Placement Evaluation System</p>
+        </div>
+    </footer>
+
+
+    <!-- ==================== ADMIN MODALS ==================== -->
+
+    <!-- 1. Password Modal -->
+    <div id="adminPasswordModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 border border-gray-200">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="font-bold text-lg text-gray-900 flex items-center">
+                    <i class="fa-solid fa-shield-halved text-etcRed mr-2"></i> Admin Authentication
+                </h3>
+                <button onclick="closeAdminPasswordModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form onsubmit="verifyAdminPassword(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Enter Admin Password</label>
+                    <input type="password" id="adminPasswordInput" required placeholder="••••••••"
+                           class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-etcRed focus:border-etcRed outline-none">
+                </div>
+                <div id="authError" class="hidden text-xs text-red-600 font-semibold">Incorrect password. Please try again.</div>
+                <button type="submit" class="w-full bg-etcRed hover:bg-etcRedDark text-white font-bold py-2.5 rounded-lg transition">
+                    Login to Admin Panel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Admin Dashboard View Modal -->
+    <div id="adminDashboardModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2 md:p-6">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden border border-gray-200">
+            <!-- Admin Header -->
+            <div class="bg-black text-white p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-red-600">
+                <div>
+                    <h2 class="text-lg font-bold flex items-center">
+                        <span class="bg-etcRed text-white text-xs px-2 py-0.5 rounded mr-2">ETC</span> Admin Dashboard
+                    </h2>
+                    <p class="text-xs text-gray-400">SheetDB Submissions Manager</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="fetchAdminData()" class="bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center">
+                        <i class="fa-solid fa-arrows-rotate mr-1.5"></i> Refresh
+                    </button>
+                    <button onclick="exportToCSV()" class="bg-etcRed hover:bg-etcRedDark text-white text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center">
+                        <i class="fa-solid fa-file-csv mr-1.5"></i> Export CSV
+                    </button>
+                    <button onclick="closeAdminDashboard()" class="bg-gray-700 hover:bg-gray-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search & Filters -->
+            <div class="p-4 bg-gray-50 border-b border-gray-200 flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-grow">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-sm"></i>
+                    <input type="text" id="adminSearchInput" oninput="filterAdminTable()" placeholder="Search student name or phone..." 
+                           class="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-etcRed focus:border-etcRed outline-none">
+                </div>
+                <select id="adminLevelFilter" onchange="filterAdminTable()" class="px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-etcRed outline-none bg-white">
+                    <option value="">All Placement Levels</option>
+                    <option value="Beginner">Beginner (A1)</option>
+                    <option value="Book 1">Book 1 (A2)</option>
+                    <option value="Book 2">Book 2 (B1)</option>
+                    <option value="Book 3">Book 3 (B2)</option>
+                    <option value="Book 4">Book 4 (C1)</option>
+                    <option value="Study Skills Success">Study Skills Success (C1+)</option>
+                </select>
+            </div>
+
+            <!-- Table Area -->
+            <div class="flex-grow overflow-auto p-4">
+                <table class="w-full text-left border-collapse text-xs md:text-sm">
+                    <thead>
+                        <tr class="bg-gray-100 border-b border-gray-300 text-gray-700 uppercase font-semibold">
+                            <th class="p-3">Date / Time</th>
+                            <th class="p-3">Student Name</th>
+                            <th class="p-3">Phone Number</th>
+                            <th class="p-3">Final Level</th>
+                            <th class="p-3">Score</th>
+                            <th class="p-3">Time Spent</th>
+                            <th class="p-3 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody" class="divide-y divide-gray-200">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+                <div id="adminTableLoading" class="text-center py-12 text-gray-500 font-semibold">
+                    <i class="fa-solid fa-circle-notch fa-spin text-2xl text-etcRed mb-2 block"></i> Loading records from SheetDB...
+                </div>
+                <div id="adminTableEmpty" class="hidden text-center py-12 text-gray-500 font-semibold">
+                    No student records found.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Admin Detailed Report Popup Modal -->
+    <div id="adminReportModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+        <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden border border-gray-200">
+            <div class="bg-gray-900 text-white p-4 flex justify-between items-center border-b border-red-600">
+                <h3 class="font-bold text-base flex items-center">
+                    <i class="fa-solid fa-file-lines text-etcRed mr-2"></i> Student Submission Inspection
+                </h3>
+                <button onclick="closeAdminReportModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="adminReportContent" class="p-6 overflow-y-auto space-y-4 text-sm">
+                <!-- Detailed Inspector content injected here -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT & TEST ENGINE ==================== -->
+    <script>
+        // SHEETDB API ENDPOINT
+        const SHEETDB_URL = "https://sheetdb.io/api/v1/wm3i84zc3m8s2";
+
+        // GLOBAL TEST STATE
+        let studentInfo = { name: '', phone: '' };
+        let currentSectionIndex = 0; // 0: Beginner, 1: Book1, 2: Book2, 3: Book3, 4: Book4
+        let sectionScores = {}; // e.g., { beginner: 22, book1: 18 }
+        let userAnswers = {}; // Detailed responses stored per section
+        let testTimerInterval = null;
+        let timeRemainingSeconds = 30 * 60; // 30 minutes
+        let timeSpentFormatted = "0 mins 0 secs";
+        let testStartTime = null;
+
+        // SECTIONS DEFINITION & SCORE THRESHOLDS
+        const SECTIONS = [
+            { id: 'beginner', name: 'Beginner Level', threshold: 17, passNext: 'book1', failLevel: 'Beginner (A1)' },
+            { id: 'book1', name: 'Book 1 Level', threshold: 20, passNext: 'book2', failLevel: 'Book 1 (A2)' },
+            { id: 'book2', name: 'Book 2 Level', threshold: 22, passNext: 'book3', failLevel: 'Book 2 (B1)' },
+            { id: 'book3', name: 'Book 3 Level', threshold: 26, passNext: 'book4', failLevel: 'Book 3 (B2)' },
+            { id: 'book4', name: 'Book 4 Level', threshold: 26, passNext: 'success', failLevel: 'Book 4 (C1)', passLevel: 'Study Skills Success (C1+)' }
+        ];
+
+        // FULL QUESTION BANK
+        const QUESTION_BANK = {
+            beginner: {
+                title: "Beginner’s Level (Max 30 Marks)",
+                groups: [
+                    {
+                        type: "mcq",
+                        heading: "Grammar: Choose the correct answer",
+                        questions: [
+                            { id: "b_g1", q: "1. I ___ a student.", options: ["is", "am", "are"], answer: "am" },
+                            { id: "b_g2", q: "2. She ___ from Spain.", options: ["is", "are", "am"], answer: "is" },
+                            { id: "b_g3", q: "3. They ___ happy today.", options: ["is", "am", "are"], answer: "are" },
+                            { id: "b_g4", q: "4. He ___ football every Saturday.", options: ["play", "plays", "playing"], answer: "plays" },
+                            { id: "b_g5", q: "5. We ___ breakfast at 8:00.", options: ["has", "have", "having"], answer: "have" },
+                            { id: "b_g6", q: "6. ___ you like pizza?", options: ["Do", "Does", "Are"], answer: "Do" },
+                            { id: "b_g7", q: "7. My mother ___ a small car.", options: ["drive", "drives", "driving"], answer: "drives" },
+                            { id: "b_g8", q: "8. I ___ TV yesterday.", options: ["watch", "watched", "watches"], answer: "watched" },
+                            { id: "b_g9", q: "9. There ___ two books on the table.", options: ["is", "are", "am"], answer: "are" },
+                            { id: "b_g10", q: "10. She can ___ English very well.", options: ["speaks", "speaking", "speak"], answer: "speak" }
+                        ]
+                    },
+                    {
+                        type: "mcq",
+                        heading: "Vocabulary: Choose the correct answer",
+                        questions: [
+                            { id: "b_v1", q: "1. A teacher works in a:", options: ["school", "bank", "airport"], answer: "school" },
+                            { id: "b_v2", q: "2. We use a ___ to call people.", options: ["phone", "fridge", "bed"], answer: "phone" },
+                            { id: "b_v3", q: "3. “Big” is the opposite of:", options: ["tall", "small", "long"], answer: "small" },
+                            { id: "b_v4", q: "4. You wear these on your feet:", options: ["gloves", "shoes", "hat"], answer: "shoes" },
+                            { id: "b_v5", q: "5. Breakfast is in the:", options: ["evening", "afternoon", "morning"], answer: "morning" },
+                            { id: "b_v6", q: "6. A doctor works in a:", options: ["hospital", "cinema", "restaurant"], answer: "hospital" },
+                            { id: "b_v7", q: "7. Which word is a color?", options: ["Blue", "Bread", "Table"], answer: "Blue" },
+                            { id: "b_v8", q: "8. Your mother’s brother is your:", options: ["cousin", "uncle", "nephew"], answer: "uncle" },
+                            { id: "b_v9", q: "9. We sleep in a:", options: ["kitchen", "bathroom", "bedroom"], answer: "bedroom" },
+                            { id: "b_v10", q: "10. “Happy” means:", options: ["sad", "angry", "glad"], answer: "glad" }
+                        ]
+                    },
+                    {
+                        type: "mcq",
+                        heading: "Everyday English: Choose the correct answer",
+                        questions: [
+                            { id: "b_e1", q: "1. “How are you?”", options: ["I’m fine, thanks.", "I’m ten years old.", "It’s Monday."], answer: "I’m fine, thanks." },
+                            { id: "b_e2", q: "2. “What’s your name?”", options: ["I’m from Italy.", "My name is Sara.", "I’m a teacher."], answer: "My name is Sara." },
+                            { id: "b_e3", q: "3. “Good morning!”", options: ["Good night!", "Hello!", "Goodbye!"], answer: "Hello!" },
+                            { id: "b_e4", q: "4. “Thank you.”", options: ["You’re welcome.", "Excuse me.", "Sorry."], answer: "You’re welcome." },
+                            { id: "b_e5", q: "5. “See you tomorrow.”", options: ["See you!", "Fine, thanks.", "Good afternoon."], answer: "See you!" }
+                        ]
+                    },
+                    {
+                        type: "text",
+                        heading: "Correct the Mistake",
+                        questions: [
+                            { id: "b_c1", q: "1. She go to school every day.", expected: "She goes to school every day." },
+                            { id: "b_c2", q: "2. They is my friends.", expected: "They are my friends." },
+                            { id: "b_c3", q: "3. I no like coffee.", expected: "I don't like coffee." }
+                        ]
+                    },
+                    {
+                        type: "text",
+                        heading: "Write the Correct Form of the Verb",
+                        questions: [
+                            { id: "b_vf1", q: "1. He (play) ______________ tennis every weekend.", expected: "plays" },
+                            { id: "b_vf2", q: "2. We (be) ________________ tired yesterday.", expected: "were" }
+                        ]
+                    }
+                ]
+            },
+
+            book1: {
+                title: "Book 1 Level (Max 30 Marks)",
+                groups: [
+                    {
+                        type: "mcq",
+                        heading: "Grammar & Structure: Choose the best answer",
+                        questions: [
+                            { id: "b1_g1", q: "1. She's the receptionist. ............ is Mary.", options: ["Her name", "His name", "My name"], answer: "Her name" },
+                            { id: "b1_g2", q: "2. .......... names are Sandra and Mary.", options: ["There", "These", "Their"], answer: "Their" },
+                            { id: "b1_g3", q: "3. What would you ............? I'd like tea, please.", options: ["like to", "to like", "like"], answer: "like" },
+                            { id: "b1_g4", q: "4. What's ...........? It's a glass of milk.", options: ["these", "those", "this"], answer: "this" },
+                            { id: "b1_g5", q: "5. Where .......... you live? I ......... a house.", options: ["have / has", "does / having", "do / have"], answer: "do / have" },
+                            { id: "b1_g6", q: "6. The house ......... a garden. It ....... big.", options: ["have / are", "has / is", "is / are"], answer: "has / is" }
+                        ]
+                    },
+                    {
+                        type: "text",
+                        heading: "Correct the Sentence",
+                        questions: [
+                            { id: "b1_c1", q: "1. I have breakfast in nine o'clock.", expected: "I have breakfast at nine o'clock." },
+                            { id: "b1_c2", q: "2. My husband speak German.", expected: "My husband speaks German." },
+                            { id: "b1_c3", q: "3. What time are the girls finish school?", expected: "What time do the girls finish school?" },
+                            { id: "b1_c4", q: "4. He is a doctor. But in her spare time he watches football.", expected: "He is a doctor. But in his spare time he watches football." },
+                            { id: "b1_c5", q: "5. John and Mary like play Hockey. But they do not have time.", expected: "John and Mary like playing Hockey." }
+                        ]
+                    },
+                    {
+                        type: "mcq",
+                        heading: "Choose the correct form of the verb",
+                        questions: [
+                            { id: "b1_v1", q: "1. How (was / were) the weather last week? It was wonderful.", options: ["was", "were"], answer: "was" },
+                            { id: "b1_v2", q: "2. Where (were / was / did) you last Friday?", options: ["were", "was", "did"], answer: "were" },
+                            { id: "b1_v3", q: "3. Last Monday at 5 o'clock, I (watched / was watching / did watching) a great movie.", options: ["watched", "was watching", "did watching"], answer: "was watching" },
+                            { id: "b1_v4", q: "4. I (leaved / left / was leave) school when I was 18.", options: ["leaved", "left", "was leave"], answer: "left" },
+                            { id: "b1_v5", q: "5. Next week, the doctor (goes / is going / will going) to an international meeting.", options: ["goes", "is going", "will going"], answer: "is going" },
+                            { id: "b1_v6", q: "6. Could I (to speak / speaking / speak) to the manager please?", options: ["to speak", "speaking", "speak"], answer: "speak" }
+                        ]
+                    },
+                    {
+                        type: "mcq",
+                        heading: "Everyday English: Choose the correct answer",
+                        questions: [
+                            { id: "b1_e1", q: "1. I'd like you to meet Mr. Brady.", options: ["How are you", "Nice to meet you", "I'm fine"], answer: "Nice to meet you" },
+                            { id: "b1_e2", q: "2. What’s your nationality?", options: ["I’m India", "I’m Indian", "India"], answer: "I’m Indian" },
+                            { id: "b1_e3", q: "3. Who’s that?", options: ["She’s my mother", "She lives in USA", "He’s an engineer"], answer: "She’s my mother" },
+                            { id: "b1_e4", q: "4. How much are these?", options: ["They’re expensive", "I’d like that", "Twenty pounds each"], answer: "Twenty pounds each" },
+                            { id: "b1_e5", q: "5. How was your holiday?", options: ["Great!", "It was in London", "It was two weeks"], answer: "Great!" }
+                        ]
+                    },
+                    {
+                        type: "mcq",
+                        heading: "Vocabulary: Choose the correct word",
+                        questions: [
+                            { id: "b1_vocab1", q: "1. I ………………… the piano.", options: ["use", "play", "drive"], answer: "play" },
+                            { id: "b1_vocab2", q: "2. I want to ……………. a letter.", options: ["eat", "learn", "type"], answer: "type" },
+                            { id: "b1_vocab3", q: "3. She …………….. to the local primary school.", options: ["went", "studied", "taught"], answer: "went" },
+                            { id: "b1_vocab4", q: "4. Excuse me! Is there a petrol station ………… near here?", options: ["along", "past", "near"], answer: "near" },
+                            { id: "b1_vocab5", q: "5. I’d like to ……….. an appointment, please.", options: ["see", "make", "find"], answer: "make" }
+                        ]
+                    },
+                    {
+                        type: "essay",
+                        heading: "Writing (3 Marks)",
+                        questions: [
+                            { id: "b1_w1", q: "Write 3 sentences about yourself. Include: your age / your country / your family:", points: 3 }
+                        ]
+                    }
+                ]
+            },
+
+            book2: {
+                title: "Book 2 Level (Max 30 Marks)",
+                groups: [
+                    {
+                        type: "mcq",
+                        heading: "Grammar: Choose the best answer",
+                        questions: [
+                            { id: "b2_g1", q: "1. I .................... at home on Fridays.", options: ["usually stay", "stay usually", "usually don't stay"], answer: "usually stay" },
+                            { id: "b2_g2", q: "2. I think ..................... by train.", options: ["I will go", "I'm going", "go"], answer: "I will go" },
+                            { id: "b2_g3", q: "3. The food in Italy .............. than the food in China.", options: ["better", "are better", "is better"], answer: "is better" },
+                            { id: "b2_g4", q: "4. ............... to South America this year.", options: ["Let's go", "Let's to go", "Let's going"], answer: "Let's go" },
+                            { id: "b2_g5", q: "5. ........................... to Japan.", options: ["I'd prefer going to", "I'd prefer to go", "I'd prefer go"], answer: "I'd prefer to go" },
+                            { id: "b2_g6", q: "6. That coat is ............... one in the shop.", options: ["nicest", "the nicest", "the most nicest"], answer: "the nicest" },
+                            { id: "b2_g7", q: "7. This skirt is my size but .................", options: ["isn't enough long", "hasn't long enough", "isn't long enough"], answer: "isn't long enough" }
+                        ]
+                    },
+                    {
+                        type: "mcq",
+                        heading: "Everyday English: Choose the best answer",
+                        questions: [
+                            { id: "b2_e1", q: "1. Why do you want to learn to drive? Because.........", options: ["it's expensive", "I live a long way from work", "it takes five minutes", "we arrive soon"], answer: "I live a long way from work" },
+                            { id: "b2_e2", q: "2. What’s the matter?", options: ["I’m ill", "Yes, quite sure", "I have done it", "Thank you"], answer: "I’m ill" },
+                            { id: "b2_e3", q: "3. Julia’s at the hospital.", options: ["She broke her leg.", "She breaks her leg.", "She has broken her leg.", "She is breaking her leg."], answer: "She has broken her leg." },
+                            { id: "b2_e4", q: "4. What happened?", options: ["I have had an accident.", "I had an accident.", "I have an accident.", "I was in an accident."], answer: "I had an accident." },
+                            { id: "b2_e5", q: "5. Today’s my birthday!", options: ["Congratulations", "Happy Christmas", "Well done", "Many happy returns"], answer: "Many happy returns" },
+                            { id: "b2_e6", q: "6. Are you going to the party?", options: ["I haven’t had an invitation", "Cheers", "We haven’t met", "No, I haven’t"], answer: "I haven’t had an invitation" },
+                            { id: "b2_e7", q: "7. Do you mind if I sit here?", options: ["Not at all", "Yes, please", "You're welcome", "Never mind"], answer: "Not at all" }
+                        ]
+                    },
+                    {
+                        type: "text",
+                        heading: "Complete the Sentences",
+                        questions: [
+                            { id: "b2_cs1", q: "1. How do you take a photograph? ……………. this button on the right.", expected: "press" },
+                            { id: "b2_cs2", q: "2. It’s cold, how do you turn …………………….. the heating?", expected: "on" },
+                            { id: "b2_cs3", q: "3. How …………………….. does the journey take? It takes four hours.", expected: "long" },
+                            { id: "b2_cs4", q: "4. If the weather is hot, …………………………………………………………..", expected: "we will go to the beach" },
+                            { id: "b2_cs5", q: "5. Before you leave the house, …………………………………………………………..", expected: "turn off the lights" },
+                            { id: "b2_cs6", q: "6. I like the country; it’s quiet and cheap. The city is the opposite; it is …………. and ……………", expected: "noisy and expensive" },
+                            { id: "b2_cs7", q: "7. …………………. pen is this? It isn’t mine.", expected: "Whose" }
+                        ]
+                    },
+                    {
+                        type: "text",
+                        heading: "Correct the Sentences",
+                        questions: [
+                            { id: "b2_cr1", q: "1. In the west, it’s rainy tomorrow.", expected: "it will rain tomorrow" },
+                            { id: "b2_cr2", q: "2. Have you had lunch, just?", expected: "Have you just had lunch?" },
+                            { id: "b2_cr3", q: "3. When I want to buy something, I couldn’t find my wallet.", expected: "When I wanted to buy something" },
+                            { id: "b2_cr4", q: "4. Tom asked me to find a new desks.", expected: "a new desk" }
+                        ]
+                    },
+                    {
+                        type: "essay",
+                        heading: "Writing (5 Marks)",
+                        questions: [
+                            { id: "b2_w1", q: "Write 4 sentences about yourself: (Things you do at the weekend / future plans / your health / a recent event in the past):", points: 5 }
+                        ]
+                    }
+                ]
+            },
+
+            book3: {
+                title: "Book 3 Level (Max 30 Marks)",
+                groups: [
+                    {
+                        type: "text",
+                        heading: "Verb Tenses & Grammar: Write the verb in the correct form (10 Blanks/Points)",
+                        questions: [
+                            { id: "b3_v1", q: "1. The hardware—the computer—……………….. (make) in Japan.", expected: "is made" },
+                            { id: "b3_v2", q: "   ...But the software …………........... (come) from California.", expected: "comes" },
+                            { id: "b3_v3", q: "   ...and most of them ………………........…. (export).", expected: "are exported" },
+                            { id: "b3_v4", q: "2. I had my bag ……………. (steal) out of my car.", expected: "stolen" },
+                            { id: "b3_v5", q: "   ...The window ………….. (smash) and the bag was gone.", expected: "was smashed" },
+                            { id: "b3_v6", q: "3. I ……………. (run) into the street and phoned the police.", expected: "ran" },
+                            { id: "b3_v7", q: "4. Everyone …………………….. (need) a passport.", expected: "needs" },
+                            { id: "b3_v8", q: "5. What do you enjoy ……..................… (do) at the weekend?", expected: "doing" },
+                            { id: "b3_v9", q: "6. Kevin prefers …………………. (listen) to music.", expected: "listening" },
+                            { id: "b3_v10", q: "7. I ……………………… (live) in this village all my life.", expected: "have lived" }
+                        ]
+                    },
+                    {
+                        type: "mcq",
+                        heading: "Vocabulary: Choose the best answer",
+                        questions: [
+                            { id: "b3_vocab1", q: "1. They are …………………. a big exhibition.", options: ["organizing", "dividing", "employing"], answer: "organizing" },
+                            { id: "b3_vocab2", q: "2. What is the ………………….. of your visit to Canada?", options: ["purchase", "purpose", "proposal"], answer: "purpose" },
+                            { id: "b3_vocab3", q: "3. My house was ………………. by a thief.", options: ["blown", "shot", "burgled"], answer: "burgled" },
+                            { id: "b3_vocab4", q: "4. The car is ……………. with a steel chassis.", options: ["constructed", "conducted", "practiced"], answer: "constructed" },
+                            { id: "b3_vocab5", q: "5. His secret ……………… is to win a cycling race.", options: ["stage", "ambition", "length"], answer: "ambition" }
+                        ]
+                    },
+                    {
+                        type: "text",
+                        heading: "Answer the Questions",
+                        questions: [
+                            { id: "b3_q1", q: "1. What would you do if someone gave you a million pounds?", expected: "I would" },
+                            { id: "b3_q2", q: "2. What are you frightened of?", expected: "I am" },
+                            { id: "b3_q3", q: "3. How long have you been learning English?", expected: "I have been" },
+                            { id: "b3_q4", q: "4. What do you think we should do in the evening?", expected: "We should" },
+                            { id: "b3_q5", q: "5. What was your first job?", expected: "My first job" }
+                        ]
+                    },
+                    {
+                        type: "text",
+                        heading: "Complete the Sentences",
+                        questions: [
+                            { id: "b3_cs1", q: "1. It’s certain that in the future people …………………………………………………….", expected: "will" },
+                            { id: "b3_cs2", q: "2. In the future, the population of the world ……………………….……………………..", expected: "will increase" },
+                            { id: "b3_cs3", q: "3. The bank …………………………………………… by a thief last night.", expected: "was robbed" },
+                            { id: "b3_cs4", q: "4. When it began to rain, …………………………………………………………………", expected: "we went inside" },
+                            { id: "b3_cs5", q: "5. What did your friend say to you yesterday? …………………………………………", expected: "He told me" }
+                        ]
+                    },
+                    {
+                        type: "text",
+                        heading: "Correct the Sentences",
+                        questions: [
+                            { id: "b3_cr1", q: "1. If I am the queen, I would be very happy.", expected: "If I were the queen" },
+                            { id: "b3_cr2", q: "2. Do you know where does the train leave from?", expected: "where the train leaves from" },
+                            { id: "b3_cr3", q: "3. He said he wins a prize.", expected: "he won a prize" },
+                            { id: "b3_cr4", q: "4. Tom Hall was gave an award.", expected: "was given an award" },
+                            { id: "b3_cr5", q: "5. Perhaps I buy a new computer.", expected: "Perhaps I will buy" }
+                        ]
+                    }
+                ]
+            },
+
+            book4: {
+                title: "Book 4 Level (Max 30 Marks)",
+                groups: [
+                    {
+                        type: "text",
+                        heading: "Verb Tenses & Forms: Write the verb in the correct form",
+                        questions: [
+                            { id: "b4_vt1", q: "1. I ……………………….. (vote) in the 1992 elections.", expected: "voted" },
+                            { id: "b4_vt2", q: "2. You’re ………………….. (suppose) to wear a life-jacket when you go sailing.", expected: "supposed" },
+                            { id: "b4_vt3", q: "3. You shouldn’t have ……………………. (be) rude to your mum.", expected: "been" },
+                            { id: "b4_vt4", q: "4. The decision ………………………… (make) to spend the summer in France.", expected: "was made" },
+                            { id: "b4_vt5", q: "5. I wish that people ……………………. (be) more tolerant.", expected: "were" }
+                        ]
+                    },
+                    {
+                        type: "mcq",
+                        heading: "Grammar: Choose the best answer",
+                        questions: [
+                            { id: "b4_g1", q: "1. ………………, I would have brought my tools to fix the washing machine.", options: ["If I knew", "If I know", "If I have known", "If I had known"], answer: "If I had known" },
+                            { id: "b4_g2", q: "2. The toughest part of my job is ……………………… relentlessly.", options: ["is yelled at", "being yelled at", "yelling at", "is to yell at"], answer: "being yelled at" },
+                            { id: "b4_g3", q: "3. Notes …………………… on a color copier simply by putting them into the machine.", options: ["might forge", "forged", "might be forged", "can forge"], answer: "might be forged" },
+                            { id: "b4_g4", q: "4. Workers found the flight data recorder ………………. beneath the concrete.", options: ["buried", "burry", "has buried", "is buried"], answer: "buried" },
+                            { id: "b4_g5", q: "5. This painting is one of the nicest that I ………………………….. for a long time.", options: ["had inspected", "inspected", "have inspected", "are inspected"], answer: "have inspected" }
+                        ]
+                    },
+                    {
+                        type: "mcq",
+                        heading: "Vocabulary: Choose the best answer",
+                        questions: [
+                            { id: "b4_v1", q: "1. St. David’s is a ……………… center for people who have serious injuries.", options: ["rehabilitation", "reprobation", "reformation", "reexamination"], answer: "rehabilitation" },
+                            { id: "b4_v2", q: "2. In this village, I have to get used to not having the …………… of different foods.", options: ["cereal", "variety", "series", "raft"], answer: "variety" },
+                            { id: "b4_v3", q: "3. Peat has a special quality that helps to …………….. things for a long time.", options: ["bread", "construct", "preserve", "trim"], answer: "preserve" },
+                            { id: "b4_v4", q: "4. I really believe that in 2050 we will have moved to the …………….. of trading blocks.", options: ["borders", "continent", "cultural", "concept"], answer: "concept" },
+                            { id: "b4_v5", q: "5. There are many ………………… that surround the southwest of America.", options: ["legends", "witnesses", "effects", "carriages"], answer: "legends" }
+                        ]
+                    },
+                    {
+                        type: "text",
+                        heading: "Sentence Completion",
+                        questions: [
+                            { id: "b4_sc1", q: "1. So far in my life, ……………………………………………………………….", expected: "I have" },
+                            { id: "b4_sc2", q: "2. I preferred ………………………………………………………………………", expected: "to" },
+                            { id: "b4_sc3", q: "3. After we made entry into the house, ………………………………………..", expected: "we" },
+                            { id: "b4_sc4", q: "4. As soon as ………………………………………………………………..", expected: "he" },
+                            { id: "b4_sc5", q: "5. I will have ……………………………………………………………….", expected: "finished" }
+                        ]
+                    },
+                    {
+                        type: "text",
+                        heading: "Correct the Sentences",
+                        questions: [
+                            { id: "b4_cr1", q: "1. I’m interested in learn how computers work.", expected: "interested in learning" },
+                            { id: "b4_cr2", q: "2. I think life won’t have get any better in the future.", expected: "won't have gotten" },
+                            { id: "b4_cr3", q: "3. He might be hit by an ax in the past.", expected: "might have been hit" },
+                            { id: "b4_cr4", q: "4. I’m getting used to work for late hours.", expected: "getting used to working" },
+                            { id: "b4_cr5", q: "5. I saw him talked to her.", expected: "saw him talk" }
+                        ]
+                    },
+                    {
+                        type: "essay",
+                        heading: "Writing (5 Marks)",
+                        questions: [
+                            { id: "b4_w1", q: "Write about yourself including: wishes / regrets / a rule in your job / your expectations for the future / what you are proud of having done:", points: 5 }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // START TEST PROCEDURE
+        function startTest(e) {
+            e.preventDefault();
+            const name = document.getElementById('studentName').value.trim();
+            const phone = document.getElementById('studentPhone').value.trim();
+
+            if(!name || !phone) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+
+            studentInfo.name = name;
+            studentInfo.phone = phone;
+
+            document.getElementById('registrationCard').classList.add('hidden');
+            document.getElementById('testContainer').classList.remove('hidden');
+            document.getElementById('timerContainer').classList.remove('hidden');
+
+            testStartTime = new Date();
+            startCountdownTimer();
+            loadCurrentSection();
+        }
+
+        // TIMER HANDLER
+        function startCountdownTimer() {
+            testTimerInterval = setInterval(() => {
+                timeRemainingSeconds--;
+                if(timeRemainingSeconds <= 0) {
+                    clearInterval(testTimerInterval);
+                    alert("30 Minutes Timer Expired! Your test is being automatically submitted.");
+                    autoFinalizeTest();
+                    return;
+                }
+                const mins = Math.floor(timeRemainingSeconds / 60);
+                const secs = timeRemainingSeconds % 60;
+                document.getElementById('timerDisplay').textContent = 
+                    `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // CALCULATE TIME SPENT
+        function calculateTimeSpent() {
+            const elapsedSeconds = (30 * 60) - timeRemainingSeconds;
+            const m = Math.floor(elapsedSeconds / 60);
+            const s = elapsedSeconds % 60;
+            return `${m} mins ${s} secs`;
+        }
+
+        // RENDER CURRENT SECTION
+        function loadCurrentSection() {
+            const secInfo = SECTIONS[currentSectionIndex];
+            const secData = QUESTION_BANK[secInfo.id];
+
+            document.getElementById('currentLevelBadge').textContent = secInfo.name;
+            document.getElementById('currentLevelTitle').textContent = secData.title;
+            document.getElementById('levelProgressText').textContent = `Level ${currentSectionIndex + 1} of 5`;
+
+            const wrapper = document.getElementById('questionsWrapper');
+            wrapper.innerHTML = '';
+
+            secData.groups.forEach((group, gIdx) => {
+                const groupEl = document.createElement('div');
+                groupEl.className = "bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-4";
+                
+                let groupHTML = `<h3 class="font-bold text-gray-900 text-base border-b border-gray-100 pb-2 text-etcRed">${group.heading}</h3>`;
+
+                group.questions.forEach((q, qIdx) => {
+                    groupHTML += `<div class="p-3 bg-gray-50/70 rounded-lg border border-gray-100 space-y-2">
+                        <p class="font-semibold text-sm text-gray-800">${q.q}</p>`;
+
+                    if(group.type === 'mcq') {
+                        groupHTML += `<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 pt-1">`;
+                        q.options.forEach((opt, oIdx) => {
+                            const optId = `${q.id}_opt${oIdx}`;
+                            groupHTML += `
+                                <label for="${optId}" class="flex items-center space-x-2 bg-white p-2.5 rounded-lg border border-gray-200 cursor-pointer hover:border-etcRed transition text-xs md:text-sm">
+                                    <input type="radio" id="${optId}" name="${q.id}" value="${opt}" class="text-etcRed focus:ring-etcRed" required>
+                                    <span class="text-gray-800">${opt}</span>
+                                </label>`;
+                        });
+                        groupHTML += `</div>`;
+                    } else if(group.type === 'text') {
+                        groupHTML += `
+                            <input type="text" name="${q.id}" required placeholder="Type your answer here..." 
+                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-etcRed focus:border-etcRed outline-none bg-white">`;
+                    } else if(group.type === 'essay') {
+                        groupHTML += `
+                            <textarea name="${q.id}" rows="4" required placeholder="Write your paragraph/sentences here..." 
+                                      class="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-etcRed focus:border-etcRed outline-none bg-white"></textarea>`;
+                    }
+
+                    groupHTML += `</div>`;
+                });
+
+                groupEl.innerHTML = groupHTML;
+                wrapper.appendChild(groupEl);
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // SUBMIT SECTION & DETERMINE ADAPTIVE STEP
+        function submitCurrentSection(e) {
+            e.preventDefault();
+            const secInfo = SECTIONS[currentSectionIndex];
+            const secData = QUESTION_BANK[secInfo.id];
+            const formData = new FormData(document.getElementById('activeTestForm'));
+
+            let score = 0;
+            userAnswers[secInfo.id] = [];
+
+            secData.groups.forEach(group => {
+                group.questions.forEach(q => {
+                    const ans = (formData.get(q.id) || '').toString().trim();
+                    let isCorrect = false;
+                    let awarded = 0;
+
+                    if(group.type === 'mcq') {
+                        if(ans.toLowerCase() === q.answer.toLowerCase()) {
+                            isCorrect = true;
+                            awarded = 1;
+                        }
+                    } else if(group.type === 'text') {
+                        // Soft phrase matching for open/text questions
+                        if(ans && (
+                            ans.toLowerCase() === q.expected.toLowerCase() || 
+                            ans.toLowerCase().includes(q.expected.toLowerCase()) ||
+                            q.expected.toLowerCase().includes(ans.toLowerCase())
+                        )) {
+                            isCorrect = true;
+                            awarded = 1;
+                        } else {
+                            // Give point for non-empty text entry as soft evaluation
+                            awarded = ans.length > 2 ? 1 : 0;
+                            isCorrect = awarded > 0;
+                        }
+                    } else if(group.type === 'essay') {
+                        // Essay grading simulation based on length/effort
+                        const words = ans.split(/\s+/).filter(w => w.length > 0).length;
+                        if(words >= 15) awarded = q.points;
+                        else if(words >= 8) awarded = Math.ceil(q.points / 2);
+                        else if(words > 0) awarded = 1;
+                        else awarded = 0;
+                        isCorrect = awarded >= (q.points / 2);
+                    }
+
+                    score += awarded;
+
+                    userAnswers[secInfo.id].push({
+                        qId: q.id,
+                        question: q.q,
+                        userAnswer: ans,
+                        correctAnswer: q.answer || q.expected || "Teacher Evaluation / Essay",
+                        isCorrect: isCorrect,
+                        score: awarded
+                    });
+                });
+            });
+
+            sectionScores[secInfo.id] = score;
+
+            // ADAPTIVE LOGIC CHECK
+            if(score >= secInfo.threshold && secInfo.passNext !== 'success') {
+                // Advance to next section
+                currentSectionIndex++;
+                loadCurrentSection();
+            } else {
+                // Finalize Test (Failed threshold OR completed final book)
+                let assignedLevel = "";
+                if(score >= secInfo.threshold && secInfo.passNext === 'success') {
+                    assignedLevel = secInfo.passLevel;
+                } else {
+                    assignedLevel = secInfo.failLevel;
+                }
+                finalizeAndSendResults(assignedLevel);
+            }
+        }
+
+        // AUTO FINALIZE IF TIMER EXPIRES
+        function autoFinalizeTest() {
+            const secInfo = SECTIONS[currentSectionIndex];
+            let assignedLevel = secInfo.failLevel;
+            finalizeAndSendResults(assignedLevel);
+        }
+
+        // FINALIZE AND SUBMIT TO SHEETDB
+        function finalizeAndSendResults(assignedLevel) {
+            clearInterval(testTimerInterval);
+            timeSpentFormatted = calculateTimeSpent();
+
+            // Total Score calculation across all attempted sections
+            let grandTotal = 0;
+            let totalPossible = 0;
+            Object.keys(sectionScores).forEach(key => {
+                grandTotal += sectionScores[key];
+                totalPossible += 30;
+            });
+            const totalScoreFormatted = `${grandTotal} / ${totalPossible}`;
+
+            // Prepare Payload for SheetDB
+            const now = new Date();
+            const timestamp = now.getFullYear() + "-" + 
+                String(now.getMonth()+1).padStart(2,'0') + "-" + 
+                String(now.getDate()).padStart(2,'0') + " " + 
+                String(now.getHours()).padStart(2,'0') + ":" + 
+                String(now.getMinutes()).padStart(2,'0');
+
+            const payloadData = {
+                data: [
+                    {
+                        date: timestamp,
+                        student_name: studentInfo.name,
+                        phone_number: studentInfo.phone,
+                        assigned_level: assignedLevel,
+                        total_score: totalScoreFormatted,
+                        time_spent: timeSpentFormatted,
+                        detailed_answers_summary: JSON.stringify(userAnswers)
+                    }
+                ]
+            };
+
+            // Send POST request to SheetDB
+            fetch(SHEETDB_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payloadData)
+            }).then(res => res.json())
+              .then(data => console.log('Successfully saved to SheetDB:', data))
+              .catch(err => console.error('SheetDB Error:', err));
+
+            // Render Results Screen
+            renderStudentResults(assignedLevel, totalScoreFormatted);
+        }
+
+        // RENDER STUDENT RESULT VIEW
+        function renderStudentResults(assignedLevel, totalScoreFormatted) {
+            document.getElementById('testContainer').classList.add('hidden');
+            document.getElementById('timerContainer').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+
+            document.getElementById('resStudentName').textContent = studentInfo.name;
+            document.getElementById('resStudentPhone').textContent = studentInfo.phone;
+            document.getElementById('resAssignedLevel').textContent = assignedLevel;
+            document.getElementById('resTotalScore').textContent = totalScoreFormatted;
+            document.getElementById('resTimeSpent').textContent = timeSpentFormatted;
+
+            // Render detailed answer list
+            const reportContainer = document.getElementById('fullReportContainer');
+            reportContainer.innerHTML = '';
+
+            Object.keys(userAnswers).forEach(secKey => {
+                const secAnswers = userAnswers[secKey];
+                const secTitle = QUESTION_BANK[secKey].title;
+                const secScore = sectionScores[secKey];
+
+                const secCard = document.createElement('div');
+                secCard.className = "bg-gray-50 border border-gray-200 rounded-xl p-5 space-y-3";
+
+                let cardHTML = `<div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                    <h4 class="font-bold text-gray-900 text-base">${secTitle}</h4>
+                    <span class="bg-etcRed text-white text-xs px-3 py-1 rounded-full font-bold">Score: ${secScore} / 30</span>
+                </div><div class="space-y-2 mt-3">`;
+
+                secAnswers.forEach((ansObj, i) => {
+                    const statusBg = ansObj.isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200';
+                    const statusText = ansObj.isCorrect ? 'text-green-700' : 'text-red-700';
+                    const icon = ansObj.isCorrect ? '<i class="fa-solid fa-check text-green-600 mr-1"></i>' : '<i class="fa-solid fa-xmark text-red-600 mr-1"></i>';
+
+                    cardHTML += `
+                        <div class="p-3 rounded-lg border ${statusBg} text-xs md:text-sm space-y-1">
+                            <p class="font-semibold text-gray-900">${ansObj.question}</p>
+                            <p class="${statusText}">${icon} <strong>Your Answer:</strong> ${ansObj.userAnswer || '<i>No Answer</i>'}</p>
+                            ${!ansObj.isCorrect ? `<p class="text-gray-600"><strong>Expected Answer:</strong> ${ansObj.correctAnswer}</p>` : ''}
+                        </div>`;
+                });
+
+                cardHTML += `</div>`;
+                secCard.innerHTML = cardHTML;
+                reportContainer.appendChild(secCard);
+            });
+        }
+
+
+        // ==================== ADMIN PANEL LOGIC ==================== //
+
+        let cachedAdminRecords = [];
+
+        function openAdminPasswordModal() {
+            document.getElementById('adminPasswordModal').classList.remove('hidden');
+            document.getElementById('authError').classList.add('hidden');
+            document.getElementById('adminPasswordInput').value = '';
+        }
+
+        function closeAdminPasswordModal() {
+            document.getElementById('adminPasswordModal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword(e) {
+            e.preventDefault();
+            const pass = document.getElementById('adminPasswordInput').value;
+            if(pass === 'etc2005') {
+                closeAdminPasswordModal();
+                document.getElementById('adminDashboardModal').classList.remove('hidden');
+                fetchAdminData();
+            } else {
+                document.getElementById('authError').classList.remove('hidden');
+            }
+        }
+
+        function closeAdminDashboard() {
+            document.getElementById('adminDashboardModal').classList.add('hidden');
+        }
+
+        function fetchAdminData() {
+            document.getElementById('adminTableLoading').classList.remove('hidden');
+            document.getElementById('adminTableEmpty').classList.add('hidden');
+            document.getElementById('adminTableBody').innerHTML = '';
+
+            fetch(SHEETDB_URL)
+                .then(res => res.json())
+                .then(data => {
+                    cachedAdminRecords = Array.isArray(data) ? data : [];
+                    renderAdminTable(cachedAdminRecords);
+                })
+                .catch(err => {
+                    console.error("Error fetching SheetDB:", err);
+                    document.getElementById('adminTableLoading').classList.add('hidden');
+                    document.getElementById('adminTableEmpty').classList.remove('hidden');
+                    document.getElementById('adminTableEmpty').textContent = "Failed to fetch data from SheetDB.";
+                });
+        }
+
+        function renderAdminTable(records) {
+            document.getElementById('adminTableLoading').classList.add('hidden');
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = '';
+
+            if(!records || records.length === 0) {
+                document.getElementById('adminTableEmpty').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('adminTableEmpty').classList.add('hidden');
+
+            records.reverse().forEach((rec, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50 transition border-b border-gray-200";
+
+                tr.innerHTML = `
+                    <td class="p-3 text-gray-600 whitespace-nowrap">${rec.date || 'N/A'}</td>
+                    <td class="p-3 font-semibold text-gray-900">${rec.student_name || 'N/A'}</td>
+                    <td class="p-3 text-gray-700">${rec.phone_number || 'N/A'}</td>
+                    <td class="p-3 font-bold text-etcRed">${rec.assigned_level || 'N/A'}</td>
+                    <td class="p-3 text-gray-800 font-medium">${rec.total_score || 'N/A'}</td>
+                    <td class="p-3 text-gray-600 whitespace-nowrap">${rec.time_spent || 'N/A'}</td>
+                    <td class="p-3 text-center">
+                        <button onclick='inspectStudentReport(${idx})' class="bg-gray-900 hover:bg-black text-white px-3 py-1.5 rounded text-xs font-semibold transition">
+                            <i class="fa-solid fa-eye mr-1"></i> Inspect
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterAdminTable() {
+            const search = document.getElementById('adminSearchInput').value.toLowerCase();
+            const levelFilter = document.getElementById('adminLevelFilter').value.toLowerCase();
+
+            const filtered = cachedAdminRecords.filter(rec => {
+                const nameMatch = (rec.student_name || '').toLowerCase().includes(search);
+                const phoneMatch = (rec.phone_number || '').toLowerCase().includes(search);
+                const levelMatch = levelFilter === "" || (rec.assigned_level || '').toLowerCase().includes(levelFilter);
+
+                return (nameMatch || phoneMatch) && levelMatch;
+            });
+
+            renderAdminTable(filtered);
+        }
+
+        function inspectStudentReport(index) {
+            const rec = cachedAdminRecords[index];
+            if(!rec) return;
+
+            const modal = document.getElementById('adminReportModal');
+            const content = document.getElementById('adminReportContent');
+
+            let parsedSummary = {};
+            try {
+                parsedSummary = JSON.parse(rec.detailed_answers_summary);
+            } catch(e) {
+                parsedSummary = null;
+            }
+
+            let html = `
+                <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 space-y-2 mb-4">
+                    <p><strong>Student Name:</strong> ${rec.student_name}</p>
+                    <p><strong>Phone:</strong> ${rec.phone_number}</p>
+                    <p><strong>Assigned Level:</strong> <span class="text-etcRed font-bold">${rec.assigned_level}</span></p>
+                    <p><strong>Total Score:</strong> ${rec.total_score}</p>
+                    <p><strong>Time Spent:</strong> ${rec.time_spent}</p>
+                    <p><strong>Date Submitted:</strong> ${rec.date}</p>
+                </div>
+            `;
+
+            if(parsedSummary) {
+                Object.keys(parsedSummary).forEach(secKey => {
+                    const secAnswers = parsedSummary[secKey];
+                    html += `<div class="border-t pt-3 mt-3"><h4 class="font-bold text-etcRed text-sm uppercase mb-2">${secKey} Section Answers</h4>`;
+                    secAnswers.forEach(ans => {
+                        const statusClass = ans.isCorrect ? 'text-green-600' : 'text-red-600';
+                        html += `
+                            <div class="p-2 mb-2 bg-gray-50 rounded border text-xs">
+                                <p class="font-semibold text-gray-800">${ans.question}</p>
+                                <p class="${statusClass}">Ans: ${ans.userAnswer || 'None'}</p>
+                                <p class="text-gray-500">Correct Ref: ${ans.correctAnswer}</p>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                });
+            } else {
+                html += `<div class="p-3 bg-red-50 text-red-600 text-xs rounded">Raw Detailed Summary: ${rec.detailed_answers_summary}</div>`;
+            }
+
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+        }
+
+        function closeAdminReportModal() {
+            document.getElementById('adminReportModal').classList.add('hidden');
+        }
+
+        function exportToCSV() {
+            if(!cachedAdminRecords || cachedAdminRecords.length === 0) {
+                alert("No data available to export.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,Date,Student Name,Phone Number,Assigned Level,Total Score,Time Spent\n";
+            cachedAdminRecords.forEach(rec => {
+                const row = [
+                    `"${rec.date || ''}"`,
+                    `"${rec.student_name || ''}"`,
+                    `"${rec.phone_number || ''}"`,
+                    `"${rec.assigned_level || ''}"`,
+                    `"${rec.total_score || ''}"`,
+                    `"${rec.time_spent || ''}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "ETC_Placement_Test_Submissions.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
